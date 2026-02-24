@@ -57,7 +57,6 @@
                         Réponse libre saisie — l'option n'est pas obligatoire.
                     </div>
 
-                    <!-- IMPORTANT : classe pour éviter les bugs visuels -->
                     <div class="quiz-nav">
                         <button type="button" class="btn secondary" id="prevBtn">Précédent</button>
                         <button type="button" class="btn" id="nextBtn">Continuer</button>
@@ -88,7 +87,6 @@
                     </label>
                     <div id="consentDesc" class="sr-only">Consentement RGPD</div>
 
-                    <!-- IMPORTANT : classe pour layout propre -->
                     <div class="contact-actions">
                         <button class="btn" id="sendBtn">Envoyer ma demande</button>
                         <button class="btn secondary" id="restartBtn" type="button">Recommencer</button>
@@ -114,6 +112,26 @@
 
                         <div class="small muted" id="tipLine">Tu peux fermer la page après réception du mail.</div>
                         <button class="btn secondary" id="backHome" type="button">Retour à l’accueil</button>
+                    </div>
+                </div>
+
+                <!-- 5) Écran "email envoyé" -->
+                <div id="view-done" class="view" hidden aria-live="polite">
+                    <div class="wait">
+                        <h3 id="doneTitle">C’est envoyé !</h3>
+                        <p class="muted" id="doneMessage" style="margin-top:8px">
+                            Ton email est dans ta boîte mail. Merci et à bientôt 🙂
+                        </p>
+
+                        <div class="timeline small" aria-label="Étapes d'envoi (terminé)" style="margin-top:14px">
+                            <div class="step done"><span class="dot"></span> Demande envoyée</div>
+                            <div class="step done"><span class="dot"></span> Analyse de tes réponses</div>
+                            <div class="step done"><span class="dot"></span> Génération de ton profil</div>
+                            <div class="step done"><span class="dot"></span> Envoi à ta boîte mail</div>
+                        </div>
+
+                        <button class="btn" id="restartFromDone" type="button" style="margin-top:14px">Recommencer</button>
+                        <button class="btn secondary" id="backHome2" type="button" style="margin-top:10px">Retour à l’accueil</button>
                     </div>
                 </div>
             </section>
@@ -313,13 +331,28 @@
             renderQuestion();
         };
 
+        // ✅ On récupère la réponse JSON du webhook (Webhook response Make)
         const sendToWebhook = async (payload) => {
             const res = await fetch(WEBHOOK_URL, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(payload)
             });
-            if (!res.ok) throw new Error('HTTP ' + res.status);
+
+            // Même si Make renvoie du texte, on gère proprement
+            const contentType = res.headers.get('content-type') || '';
+            let data = null;
+            if (contentType.includes('application/json')) {
+                data = await res.json();
+            } else {
+                const txt = await res.text();
+                data = { ok: res.ok, message: txt };
+            }
+
+            if (!res.ok) {
+                throw new Error('HTTP ' + res.status + ' — ' + (data?.message || 'Erreur'));
+            }
+            return data;
         };
 
         // Timeline (attente)
@@ -337,6 +370,17 @@
             stage = Math.min(stage + 1, 3);
         };
 
+        const resetAll = () => {
+            state = { domain: null, idx: 0, answers: [] };
+            show('#view-domain');
+            $('#progressBar').style.width = '0%';
+            $('#liveScores').innerHTML = '';
+            $('#liveHint').textContent = 'Choisis ton domaine pour commencer.';
+            clearInterval(timer);
+            stage = 1;
+            advanceTimeline();
+        };
+
         // Events
         $$('#view-domain .btn').forEach(b => b.addEventListener('click', (e) => {
             state.domain = e.currentTarget.dataset.domain;
@@ -350,16 +394,10 @@
         $('#prevBtn').addEventListener('click', prev);
         $('#nextBtn').addEventListener('click', next);
 
-        $('#restartBtn').addEventListener('click', () => {
-            state = { domain: null, idx: 0, answers: [] };
-            show('#view-domain');
-            $('#progressBar').style.width = '0%';
-            $('#liveScores').innerHTML = '';
-            $('#liveHint').textContent = 'Choisis ton domaine pour commencer.';
-            clearInterval(timer);
-            stage = 1;
-            advanceTimeline();
-        });
+        $('#restartBtn').addEventListener('click', resetAll);
+        $('#backHome').addEventListener('click', resetAll);
+        $('#backHome2').addEventListener('click', resetAll);
+        $('#restartFromDone').addEventListener('click', resetAll);
 
         $('#sendBtn').addEventListener('click', async (ev) => {
             ev.preventDefault();
@@ -389,27 +427,38 @@
             };
 
             try {
-                await sendToWebhook(payload);
+                // Affiche écran d'attente pendant l'appel
                 show('#view-wait');
                 stage = 1;
                 advanceTimeline();
                 clearInterval(timer);
                 timer = setInterval(advanceTimeline, 2400);
+
+                const resp = await sendToWebhook(payload);
+
+                // ✅ Si Make confirme que l'email est envoyé => écran final
+                if (resp && resp.ok && resp.status === 'email_sent') {
+                    clearInterval(timer);
+
+                    $('#doneTitle').textContent = resp.title || 'C’est envoyé !';
+                    $('#doneMessage').textContent = resp.message || 'Ton email est dans ta boîte mail. Merci et à bientôt 🙂';
+
+                    show('#view-done');
+                    return;
+                }
+
+                // Si OK mais pas le status attendu, on affiche quand même un message sympa
+                clearInterval(timer);
+                $('#doneTitle').textContent = 'Demande reçue';
+                $('#doneMessage').textContent = resp?.message || "C’est bon ! Si tu ne reçois rien, pense à vérifier tes spams.";
+                show('#view-done');
+
             } catch (e) {
                 console.error(e);
+                clearInterval(timer);
                 alert('Envoi impossible. Réessaie.');
+                show('#view-contact');
             }
-        });
-
-        $('#backHome').addEventListener('click', () => {
-            state = { domain: null, idx: 0, answers: [] };
-            show('#view-domain');
-            $('#progressBar').style.width = '0%';
-            $('#liveScores').innerHTML = '';
-            $('#liveHint').textContent = 'Choisis ton domaine pour commencer.';
-            clearInterval(timer);
-            stage = 1;
-            advanceTimeline();
         });
 
         $('#year').textContent = new Date().getFullYear();
