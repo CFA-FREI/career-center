@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Cap Boussole — Quiz</title>
+    <meta name="description" content="Choix du domaine → 10 questions (4 options + champ libre). Résultat envoyé par email." />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+    <div class="wrap">
+        <header style="display:flex;align-items:center;gap:12px;padding:8px 0 18px">
+            <div class="brand" aria-label="Efrei & CFA">
+                <img class="brand-logo" src="Logo efrei.png" alt="Logo Efrei" />
+                <img class="brand-logo brand-logo--cfa" src="Logo cfa.png" alt="Logo CFA" />
+            </div>
+            <div>
+                <h1 style="margin:0;font-size:1.35rem;">Cap Boussole — Orientation par secteurs</h1>
+                <div class="muted small">Choisis ton domaine → 10 questions · résultat envoyé par email</div>
+            </div>
+        </header>
+
+        <main class="grid grid-quiz" id="app">
+            <section class="card" id="panel">
+                <div class="pill">Étudiants · Mobile-first · Accessible</div>
+                <h2 style="margin:12px 0 8px">Ton parcours guidé</h2>
+
+                <div class="progress" aria-label="Progression">
+                    <div class="bar" id="progressBar" aria-hidden="true"></div>
+                </div>
+
+                <!-- 1) Choix du domaine -->
+                <div id="view-domain" class="view" role="region" aria-labelledby="domainTitle">
+                    <h3 id="domainTitle" style="margin:16px 0 6px">Choisis ton domaine d'études</h3>
+                    <div class="sectors" role="group" aria-label="Domaines">
+                        <button class="btn" data-domain="mkt">Marketing & Communication</button>
+                        <button class="btn" data-domain="cyber">Cybersécurité</button>
+                        <button class="btn" data-domain="dev">Développement & Data</button>
+                    </div>
+                    <p class="muted small" style="margin-top:10px">
+                        Tu auras 10 questions orientées <strong>secteurs d’activité</strong>.
+                        Pour chaque question, choisis une option ou écris ta propre réponse.
+                    </p>
+                </div>
+
+                <!-- 2) Quiz -->
+                <form id="quizForm" class="view" hidden aria-labelledby="qTitle">
+                    <h3 id="qTitle" class="sr-only">Questions du quiz</h3>
+                    <div id="questions"></div>
+                    <div class="small muted" id="freeHelp" style="margin-top:6px; display:none">
+                        Réponse libre saisie — l'option n'est pas obligatoire.
+                    </div>
+
+                    <!-- IMPORTANT : classe pour éviter les bugs visuels -->
+                    <div class="quiz-nav">
+                        <button type="button" class="btn secondary" id="prevBtn">Précédent</button>
+                        <button type="button" class="btn" id="nextBtn">Continuer</button>
+                    </div>
+                </form>
+
+                <!-- 3) Page contact -->
+                <div id="view-contact" class="view" hidden aria-labelledby="contactTitle">
+                    <h3 id="contactTitle">Dernière étape — on t’envoie ton profil par mail</h3>
+
+                    <div class="row row2" style="margin-top:8px">
+                        <input id="firstName" type="text" placeholder="Prénom" autocomplete="given-name" aria-label="Prénom">
+                        <input id="lastName" type="text" placeholder="Nom" autocomplete="family-name" aria-label="Nom">
+                    </div>
+
+                    <div class="row row2" style="margin-top:8px">
+                        <input id="className" type="text" placeholder="Classe (ex. L3, M1)" autocomplete="off" aria-label="Classe">
+                        <input id="studentEmail" type="email" placeholder="Email étudiant" autocomplete="email" aria-label="Email">
+                    </div>
+
+                    <div class="row" style="margin-top:8px">
+                        <input id="city" type="text" placeholder="Ville" autocomplete="address-level2" aria-label="Ville">
+                    </div>
+
+                    <label class="small" style="display:flex; gap:10px; margin-top:10px; align-items:flex-start;">
+                        <input id="consent" type="checkbox" aria-describedby="consentDesc">
+                        <span>J’accepte l’envoi de mes réponses au Career Center (Make → Airtable). Je peux demander la suppression à tout moment.</span>
+                    </label>
+                    <div id="consentDesc" class="sr-only">Consentement RGPD</div>
+
+                    <!-- IMPORTANT : classe pour layout propre -->
+                    <div class="contact-actions">
+                        <button class="btn" id="sendBtn">Envoyer ma demande</button>
+                        <button class="btn secondary" id="restartBtn" type="button">Recommencer</button>
+                    </div>
+
+                    <p class="muted small" style="margin-top:10px">
+                        Tu recevras ton <strong>profil</strong> et des <strong>secteurs</strong> correspondants.
+                    </p>
+                </div>
+
+                <!-- 4) Écran d'attente -->
+                <div id="view-wait" class="view" hidden aria-live="polite">
+                    <div class="wait">
+                        <div class="ring" aria-hidden="true"></div>
+                        <h3>Nous préparons ton email…</h3>
+
+                        <div class="timeline small" aria-label="Étapes d'envoi">
+                            <div class="step done" id="st1"><span class="dot"></span> Demande envoyée</div>
+                            <div class="step active" id="st2"><span class="dot"></span> Analyse de tes réponses</div>
+                            <div class="step" id="st3"><span class="dot"></span> Génération de ton profil</div>
+                            <div class="step" id="st4"><span class="dot"></span> Envoi à ta boîte mail</div>
+                        </div>
+
+                        <div class="small muted" id="tipLine">Tu peux fermer la page après réception du mail.</div>
+                        <button class="btn secondary" id="backHome" type="button">Retour à l’accueil</button>
+                    </div>
+                </div>
+            </section>
+
+            <aside class="card" aria-live="polite">
+                <h3 style="margin-top:0;">Aperçu</h3>
+                <div class="small muted" id="liveHint">Choisis ton domaine pour commencer.</div>
+                <div id="liveScores" class="small" style="margin-top:8px"></div>
+                <hr class="sep" />
+                <div class="small muted">Astuce : si aucune option ne te va, utilise le champ libre.</div>
+            </aside>
+        </main>
+
+        <footer>© <span id="year"></span> Career Center — Cap Boussole</footer>
+    </div>
+
+    <script>
+        const $ = (q) => document.querySelector(q);
+        const $$ = (q) => document.querySelectorAll(q);
+
+        // ➜ REMPLACE ici par l'URL de ton webhook Make
+        const WEBHOOK_URL = "https://hook.eu2.make.com/emtm8bt2vl879vainufy4gxthe1pojbb";
+
+        const DOMAIN_QUESTIONS = {
+            mkt: [
+                { t: "Les univers qui t’attirent :", k: "mkt_sectors_1", opts: ["E-commerce / Retail", "Luxe / Mode / Beauté", "Sport / Divertissement", "Tech B2B / SaaS"] },
+                { t: "Autres secteurs possibles :", k: "mkt_sectors_2", opts: ["Santé / Medtech", "Énergie / Green", "ONG / Public", "Tourisme / Événementiel"] },
+                { t: "Types de marques que tu veux servir :", k: "mkt_brand_type", opts: ["Grand public", "Premium / Luxe", "Start-up", "Institutions"] },
+                { t: "Ta force pour ces secteurs :", k: "mkt_strength", opts: ["Storytelling / Contenu", "Influence / Social", "Acquisition / Ads", "Études / Data marketing"] },
+                { t: "Style de campagnes préféré :", k: "mkt_campaign", opts: ["Buzz créatif", "Toujours-on social", "Performance / ROI", "Brand content éducatif"] },
+                { t: "Où veux-tu apprendre :", k: "mkt_where", opts: ["Agence", "Annonceur", "Association", "Freelance / Projet perso"] },
+                { t: "Contexte d’équipe :", k: "mkt_team", opts: ["Petite équipe polyvalente", "Équipe spécialisée", "Réseau d’ambassadeurs", "Communauté / Asso"] },
+                { t: "Indicateurs qui comptent :", k: "mkt_kpi", opts: ["Engagement", "Conversion", "Notoriété", "Satisfaction"] },
+                { t: "Canal prioritaire selon secteurs :", k: "mkt_channel", opts: ["TikTok/IG (B2C)", "LinkedIn (B2B)", "Email/CRM", "Partenariats/Events"] },
+                { t: "Rythme de travail visé :", k: "mkt_rhythm", opts: ["Sprints créa", "Perf quotidienne", "Calendrier campagnes", "Mix flexible"] },
+            ],
+            cyber: [
+                { t: "Les secteurs qui t’intéressent :", k: "cyber_sectors_1", opts: ["Finance / Banque", "Santé / Hôpital", "Public / Collectivités", "Cloud / SaaS"] },
+                { t: "Autres environnements possibles :", k: "cyber_sectors_2", opts: ["Industrie / OT", "Conseil / ESN", "Retail / E-commerce", "Énergie / Green"] },
+                { t: "Type de mission préférée :", k: "cyber_mission", opts: ["Blue Team (défense)", "Red Team (offensif)", "Gouvernance / Conformité", "SecOps / Cloud"] },
+                { t: "Contrainte majeure à gérer :", k: "cyber_constraint", opts: ["Données sensibles", "Dispositif multi-sites", "Legacy / OT", "Cloud multi-comptes"] },
+                { t: "Livrable où tu veux progresser :", k: "cyber_output", opts: ["Playbooks IR", "Rapports pentest", "Politiques / ISO", "Terraform / IaC"] },
+                { t: "Outils utiles selon secteur :", k: "cyber_tools", opts: ["SIEM / EDR", "Burp / Kali", "GRC / Risk", "AWS/Azure Sec"] },
+                { t: "Culture d’équipe :", k: "cyber_team", opts: ["SOC 24/7", "Consulting mission", "DSI interne", "Scale-up cloud"] },
+                { t: "Sensibilité réglementaire :", k: "cyber_reg", opts: ["Banque (DORA)", "Santé (HDS)", "Public (PGSSI-S)", "RGPD / ISO"] },
+                { t: "Surface à protéger :", k: "cyber_surface", opts: ["Postes & mobiles", "Applications web", "Infra cloud", "Réseaux / OT"] },
+                { t: "Appétence veille :", k: "cyber_watch", opts: ["CERT & IOC", "Ransomware", "IAM / Zero-Trust", "Kubernetes sec"] },
+            ],
+            dev: [
+                { t: "Les secteurs qui t’attirent :", k: "dev_sectors_1", opts: ["Fintech", "Healthtech", "Retail / E-commerce", "Jeu vidéo / Media"] },
+                { t: "Autres univers :", k: "dev_sectors_2", opts: ["IA / Data", "Green / Énergie", "SaaS B2B", "Smart City / IOT"] },
+                { t: "Rôle starter :", k: "dev_role", opts: ["Front-end", "Back-end", "Data / BI", "Ops / Cloud"] },
+                { t: "Type de produit à construire :", k: "dev_product", opts: ["Appli grand public", "Outil B2B", "Plateforme data", "API externes"] },
+                { t: "Contraintes sectorielles :", k: "dev_constraints", opts: ["Sécurité forte", "Scalabilité", "Temps réel", "Interop / Legacy"] },
+                { t: "DB / Données selon secteur :", k: "dev_db", opts: ["PostgreSQL", "NoSQL", "Data warehouse", "Graph / Time-series"] },
+                { t: "Déploiement cible :", k: "dev_deploy", opts: ["Store / Web public", "Cloud PaaS", "On-prem / hybrid", "Edge / IOT"] },
+                { t: "Qualité à prioriser :", k: "dev_quality", opts: ["Tests", "Perf", "Observabilité", "DX / Docs"] },
+                { t: "Collaboration", k: "dev_team", opts: ["Produit / Design", "Data / Analytics", "Ops / Sec", "Métiers / Clients"] },
+                { t: "Apprentissage préféré :", k: "dev_learn", opts: ["Projets ouverts", "Docs officielles", "Katas / Exos", "Mentorat / Pair"] },
+            ]
+        };
+
+        let state = { domain: null, idx: 0, answers: [] };
+
+        const progress = () => {
+            const total = 10;
+            const pct = Math.round((state.idx / total) * 100);
+            $('#progressBar').style.width = pct + '%';
+        };
+
+        const show = sel => {
+            $$('.view').forEach(v => v.hidden = true);
+            $(sel).hidden = false;
+        };
+
+        const updateLive = () => {
+            const d = state.domain;
+            if (!d) { $('#liveScores').innerHTML = ''; return; }
+            $('#liveScores').innerHTML =
+                `<div>Domaine : <strong>${d === 'mkt' ? 'Marketing & Com' : d === 'cyber' ? 'Cybersécurité' : 'Dév & Data'
+                }</strong></div><div>Étape : ${Math.min(state.idx + 1, 10)}/10</div>`;
+        };
+
+        const renderQuestion = () => {
+            const bank = DOMAIN_QUESTIONS[state.domain];
+            const q = bank[state.idx];
+
+            const wrap = document.createElement('div');
+            wrap.className = 'q';
+
+            const h = document.createElement('h4');
+            h.textContent = `${state.idx + 1}/10 · ${q.t}`;
+            wrap.appendChild(h);
+
+            const optBox = document.createElement('div');
+            optBox.className = 'opt';
+            optBox.setAttribute('role', 'radiogroup');
+            optBox.setAttribute('aria-label', 'Choix');
+
+            q.opts.forEach((label, i) => {
+                const id = `q${state.idx}_${i}`;
+                const lab = document.createElement('label');
+                lab.setAttribute('for', id);
+
+                const r = document.createElement('input');
+                r.type = 'radio';
+                r.name = q.k;
+                r.id = id;
+                r.value = i;
+
+                const span = document.createElement('span');
+                span.textContent = label;
+
+                lab.appendChild(r);
+                lab.appendChild(span);
+                optBox.appendChild(lab);
+            });
+
+            const free = document.createElement('div');
+            free.style.marginTop = '6px';
+
+            const toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'free-toggle';
+            toggle.textContent = 'Aucune option ne me convient — je précise';
+
+            const ta = document.createElement('textarea');
+            ta.placeholder = 'Réponse libre (secteur, type d’entreprise, projet, exemple…)';
+            ta.style.display = 'none';
+            ta.setAttribute('aria-label', 'Réponse libre');
+
+            toggle.addEventListener('click', () => {
+                ta.style.display = (ta.style.display === 'none') ? 'block' : 'none';
+                $('#freeHelp').style.display = ta.style.display;
+            });
+
+            free.appendChild(toggle);
+            free.appendChild(ta);
+
+            $('#questions').innerHTML = '';
+            $('#questions').appendChild(wrap);
+            $('#questions').appendChild(optBox);
+            $('#questions').appendChild(free);
+
+            const prev = state.answers[state.idx];
+            if (prev) {
+                if (typeof prev.choice === 'number') {
+                    const r = document.querySelector(`input[name="${q.k}"][value="${prev.choice}"]`);
+                    if (r) r.checked = true;
+                }
+                if (prev.freeText) {
+                    ta.style.display = 'block';
+                    ta.value = prev.freeText;
+                    $('#freeHelp').style.display = 'block';
+                }
+            }
+
+            $('#prevBtn').disabled = state.idx === 0;
+            $('#nextBtn').textContent = state.idx === 9 ? 'Terminer' : 'Continuer';
+
+            progress();
+            updateLive();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        const recordAnswer = () => {
+            const bank = DOMAIN_QUESTIONS[state.domain];
+            const q = bank[state.idx];
+
+            const checked = document.querySelector(`input[name="${q.k}"]:checked`);
+            const ta = $('#questions textarea');
+            const freeText = ta ? ta.value.trim() : '';
+
+            if (!checked && !freeText) {
+                alert('Choisis une option ou écris ta réponse.');
+                return false;
+            }
+
+            state.answers[state.idx] = {
+                key: q.k,
+                choice: checked ? parseInt(checked.value, 10) : null,
+                choiceLabel: checked ? q.opts[parseInt(checked.value, 10)] : null,
+                freeText
+            };
+            return true;
+        };
+
+        const next = () => {
+            if (!recordAnswer()) return;
+            if (state.idx < 9) { state.idx++; renderQuestion(); }
+            else { show('#view-contact'); updateLive(); }
+        };
+
+        const prev = () => {
+            if (state.idx === 0) return;
+            state.idx--;
+            renderQuestion();
+        };
+
+        const sendToWebhook = async (payload) => {
+            const res = await fetch(WEBHOOK_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+        };
+
+        // Timeline (attente)
+        let stage = 1;
+        let timer = null;
+
+        const advanceTimeline = () => {
+            const steps = ['#st1', '#st2', '#st3', '#st4'];
+            steps.forEach((id, i) => {
+                const el = $(id);
+                el.classList.remove('active', 'done');
+                if (i < stage) el.classList.add('done');
+                if (i === stage) el.classList.add('active');
+            });
+            stage = Math.min(stage + 1, 3);
+        };
+
+        // Events
+        $$('#view-domain .btn').forEach(b => b.addEventListener('click', (e) => {
+            state.domain = e.currentTarget.dataset.domain;
+            state.idx = 0;
+            state.answers = [];
+            show('#quizForm');
+            renderQuestion();
+            $('#liveHint').textContent = 'Réponds au fur et à mesure — champ libre disponible.';
+        }));
+
+        $('#prevBtn').addEventListener('click', prev);
+        $('#nextBtn').addEventListener('click', next);
+
+        $('#restartBtn').addEventListener('click', () => {
+            state = { domain: null, idx: 0, answers: [] };
+            show('#view-domain');
+            $('#progressBar').style.width = '0%';
+            $('#liveScores').innerHTML = '';
+            $('#liveHint').textContent = 'Choisis ton domaine pour commencer.';
+            clearInterval(timer);
+            stage = 1;
+            advanceTimeline();
+        });
+
+        $('#sendBtn').addEventListener('click', async (ev) => {
+            ev.preventDefault();
+
+            const email = $('#studentEmail').value.trim();
+            const first = $('#firstName').value.trim();
+            const last = $('#lastName').value.trim();
+            const klass = $('#className').value.trim();
+            const city = $('#city').value.trim();
+            const consent = $('#consent').checked;
+
+            if (!first || !last || !klass || !email || !city) {
+                alert('Merci de remplir tous les champs, y compris la ville.');
+                return;
+            }
+            if (!consent) {
+                alert('Merci de cocher le consentement.');
+                return;
+            }
+
+            const payload = {
+                domain: state.domain,
+                answers: state.answers,
+                first, last, klass, city, email, consent,
+                timestamp: new Date().toISOString(),
+                source: 'cap-boussole-v7'
+            };
+
+            try {
+                await sendToWebhook(payload);
+                show('#view-wait');
+                stage = 1;
+                advanceTimeline();
+                clearInterval(timer);
+                timer = setInterval(advanceTimeline, 2400);
+            } catch (e) {
+                console.error(e);
+                alert('Envoi impossible. Réessaie.');
+            }
+        });
+
+        $('#backHome').addEventListener('click', () => {
+            state = { domain: null, idx: 0, answers: [] };
+            show('#view-domain');
+            $('#progressBar').style.width = '0%';
+            $('#liveScores').innerHTML = '';
+            $('#liveHint').textContent = 'Choisis ton domaine pour commencer.';
+            clearInterval(timer);
+            stage = 1;
+            advanceTimeline();
+        });
+
+        $('#year').textContent = new Date().getFullYear();
+    </script>
+</body>
+
+</html>
