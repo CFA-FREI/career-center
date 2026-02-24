@@ -4,12 +4,64 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Cap Boussole — Clarifie tes secteurs & découvre des métiers</title>
+    <title>Cap Boussole — Révèle ta voie professionnelle</title>
     <meta name="description" content="Mini-diagnostic en 3 minutes pour clarifier tes secteurs cibles et découvrir des métiers qui pourraient te plaire (Marketing, Cyber, Dev/Data). Résultat envoyé par email." />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="./style.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="efrei-favicon.svg">
+    <link rel="apple-touch-icon" href="efrei-favicon.svg">
+
+    <!-- (Optionnel mais recommandé) : JSON-LD FAQ (PAA + GEO) -->
+    <script type="application/ld+json">
+    {
+      "@context":"https://schema.org",
+      "@type":"FAQPage",
+      "mainEntity":[
+        {
+          "@type":"Question",
+          "name":"Comment savoir quel secteur professionnel me correspond ?",
+          "acceptedAnswer":{"@type":"Answer","text":"Pars de tes préférences (missions, environnement, rythme, interaction) puis relie-les à des secteurs concrets. Cap Boussole propose une shortlist de 2–3 secteurs et des pistes de métiers à explorer à partir de 10 questions et d’un champ libre."}
+        },
+        {
+          "@type":"Question",
+          "name":"Comment trouver un métier qui me plairait ?",
+          "acceptedAnswer":{"@type":"Answer","text":"Un intitulé ne suffit pas : il faut comprendre les missions, le quotidien et le contexte. Le résultat te donne des familles de métiers cohérentes avec tes réponses, ainsi que des intitulés à rechercher pour mieux explorer des offres."}
+        },
+        {
+          "@type":"Question",
+          "name":"Le diagnostic remplace-t-il un bilan d’orientation ?",
+          "acceptedAnswer":{"@type":"Answer","text":"Non. C’est un point de départ rapide pour prioriser quelques secteurs et métiers, puis les valider via des offres, des échanges réseau et des mini-tests (projets, assos, cours, etc.)."}
+        },
+        {
+          "@type":"Question",
+          "name":"Que faites-vous de mon email ?",
+          "acceptedAnswer":{"@type":"Answer","text":"Ton email sert à t’envoyer le résultat. Le consentement est demandé à la fin du quiz et tu peux demander la suppression."}
+        },
+        {
+          "@type":"Question",
+          "name":"Qu’est-ce que Cap Boussole ?",
+          "acceptedAnswer":{"@type":"Answer","text":"Cap Boussole est un mini-diagnostic pour aider les étudiants à clarifier leurs secteurs cibles et identifier des métiers compatibles. L’utilisateur choisit un domaine, répond à 10 questions, puis reçoit par email une shortlist de secteurs et des pistes de métiers à explorer."}
+        },
+        {
+          "@type":"Question",
+          "name":"À qui s’adresse Cap Boussole ?",
+          "acceptedAnswer":{"@type":"Answer","text":"Aux étudiants (Licence, Master) qui cherchent un stage, une alternance ou un premier job, et qui veulent cibler des secteurs et des métiers plus précisément."}
+        },
+        {
+          "@type":"Question",
+          "name":"Combien de temps dure le diagnostic ?",
+          "acceptedAnswer":{"@type":"Answer","text":"Environ 3 minutes pour répondre aux 10 questions (avec possibilité de nuance via un champ libre)."}
+        },
+        {
+          "@type":"Question",
+          "name":"Quel est le résultat que je reçois ?",
+          "acceptedAnswer":{"@type":"Answer","text":"Une synthèse envoyée par email : ton profil, 2–3 secteurs prioritaires, des pistes de métiers (familles + intitulés) et une méthode simple pour valider rapidement une piste."}
+        }
+      ]
+    }
+  </script>
 </head>
 
 <body>
@@ -17,10 +69,9 @@
         <div class="wrap">
             <div class="nav" aria-label="Navigation principale">
                 <div class="brand-mini">
-                    <div class="logo" aria-hidden="true"></div>
+                    <img src="Logo efrei.png" alt="Logo Efrei" class="logo-img">
                     <div>
                         <strong>Cap Boussole</strong><br />
-                        <span class="muted small">Trouver son secteur & ses métiers (étudiants)</span>
                     </div>
                 </div>
 
@@ -30,7 +81,7 @@
                     <a href="#faq">FAQ</a>
                 </nav>
 
-                <a class="btn" href="#cta-principal" data-cta="header">Faire le diagnostic</a>
+                <a class="btn" href="#cta-principal" data-cta="header">Faire le quizz</a>
             </div>
         </div>
     </header>
@@ -41,7 +92,7 @@
             <div class="card white">
                 <span class="pill accent">3 minutes · Gratuit · Résultat par email</span>
 
-                <h1>Clarifie tes secteurs cibles et les métiers qui pourraient te plaire</h1>
+                <h1>Ton avenir commence ici</h1>
 
                 <p class="muted">
                     Tu cherches un stage, une alternance ou ton premier job, mais tu ne sais pas <strong>dans quels secteurs</strong>
@@ -53,18 +104,6 @@
                     <a class="btn" href="#cta-principal" data-cta="hero">Commencer</a>
                     <a class="btn secondary" href="#comment" data-cta="hero-secondary">Voir le déroulé</a>
                     <a class="btn accent" href="./quiz.html" data-cta="hero-direct" rel="nofollow">Aller au quiz</a>
-                </div>
-
-                <div class="hero notes" aria-label="Points importants">
-                    <div class="note"><span class="mark"></span>
-                        <div><strong>1 domaine au choix</strong> <span class="muted">Marketing / Cyber / Dév & Data</span></div>
-                    </div>
-                    <div class="note"><span class="mark"></span>
-                        <div><strong>10 questions</strong> <span class="muted">pour cerner ton style, tes missions, ton environnement</span></div>
-                    </div>
-                    <div class="note"><span class="mark"></span>
-                        <div><strong>Résultat par email</strong> <span class="muted">secteurs prioritaires + idées de métiers</span></div>
-                    </div>
                 </div>
             </div>
 
@@ -87,8 +126,8 @@
                     <strong>où</strong> candidater : quels secteurs, quelles organisations, et surtout <strong>quel type de métier</strong>.
                     Or le secteur change tout : les missions, le niveau de réglementation, les outils, la culture, et parfois le rythme.
                     <br /><br />
-                    L’objectif ici : t’aider à sortir du flou en te donnant <strong>2–3 secteurs cohérents</strong> + des <strong>pistes de
-                        métiers</strong> à explorer, pour cibler tes candidatures plutôt que de postuler “au hasard”.
+                    L’objectif ici : t’aider à sortir du flou en te donnant <strong>2–3 secteurs cohérents</strong> + des
+                    <strong>pistes de métiers</strong> à explorer, pour cibler tes candidatures plutôt que de postuler “au hasard”.
                 </p>
 
                 <div class="cards">
@@ -106,8 +145,12 @@
                     </div>
                 </div>
 
-                <div class="mt-16">
-                    <a class="btn" href="#cta-principal" data-cta="why">Faire le diagnostic</a>
+                <div class="why-cta">
+                    <div>
+                        <strong>Prêt·e à clarifier tes pistes ?</strong>
+                        <div class="muted mt-8">3 minutes · Résultat envoyé par email</div>
+                    </div>
+                    <a class="btn" href="#cta-principal" data-cta="why">Faire le quiz</a>
                 </div>
             </div>
         </section>
@@ -159,40 +202,42 @@
                 </div>
 
                 <p class="muted mt-12">
-                    Ce mini-diagnostic ne remplace pas un accompagnement complet — il sert à te donner une direction claire
-                    pour décider <strong>quoi explorer</strong> et <strong>quoi viser</strong> (secteurs + métiers), avant de candidater.
+                    Un point de départ clair : des secteurs cohérents + des métiers à explorer,
+                    puis une méthode simple pour passer à l’action.
                 </p>
 
-                <div class="cards">
-                    <div class="mini">
-                        <strong>Une shortlist de secteurs</strong>
-                        <div class="muted mt-8">2–3 secteurs à explorer en priorité, avec la logique derrière.</div>
+                <!-- 3 bénéfices principaux -->
+                <div class="benefits-grid">
+                    <div class="benefit">
+                        <div class="benefit-ico" aria-hidden="true">🧭</div>
+                        <div>
+                            <strong>Une shortlist de secteurs</strong>
+                            <div class="muted mt-8">2–3 secteurs à explorer en priorité, avec la logique derrière.</div>
+                        </div>
                     </div>
-                    <div class="mini">
-                        <strong>Des pistes de métiers</strong>
-                        <div class="muted mt-8">Des familles de postes cohérentes avec tes préférences (et des intitulés à rechercher).</div>
+
+                    <div class="benefit">
+                        <div class="benefit-ico" aria-hidden="true">🧩</div>
+                        <div>
+                            <strong>Des pistes de métiers</strong>
+                            <div class="muted mt-8">Des familles de postes + des intitulés à rechercher.</div>
+                        </div>
                     </div>
-                    <div class="mini">
-                        <strong>Un plan de recherche</strong>
-                        <div class="muted mt-8">Comment repérer les bonnes annonces, et quoi regarder pour valider/infirmer une piste.</div>
+
+                    <div class="benefit">
+                        <div class="benefit-ico" aria-hidden="true">📝</div>
+                        <div>
+                            <strong>Un plan de recherche</strong>
+                            <div class="muted mt-8">Comment valider une piste via offres, échanges réseau, mini-tests.</div>
+                        </div>
                     </div>
                 </div>
 
-                <hr class="sep" />
-
-                <div class="cards">
-                    <div class="mini">
-                        <strong>Tu peux nuancer</strong>
-                        <div class="muted mt-8">Champ libre à chaque question si aucune option ne colle à ton cas.</div>
-                    </div>
-                    <div class="mini">
-                        <strong>Durée</strong>
-                        <div class="muted mt-8">Environ 3 minutes selon tes réponses.</div>
-                    </div>
-                    <div class="mini">
-                        <strong>Pour qui ?</strong>
-                        <div class="muted mt-8">Licence / Master / alternance / stage / premier job / réorientation.</div>
-                    </div>
+                <!-- Détails -->
+                <div class="benefits-meta">
+                    <div class="meta-item"><span class="meta-dot" aria-hidden="true"></span><strong>Tu peux nuancer</strong> · Champ libre à chaque question</div>
+                    <div class="meta-item"><span class="meta-dot" aria-hidden="true"></span><strong>Durée</strong> · Environ 3 minutes</div>
+                    <div class="meta-item"><span class="meta-dot" aria-hidden="true"></span><strong>Pour qui ?</strong> · Licence / Master / stage / alternance / premier job</div>
                 </div>
 
                 <div class="mt-16">
@@ -218,7 +263,7 @@
             </div>
         </section>
 
-        <!-- FAQ PAA + GEO -->
+        <!-- FAQ = PAA + GEO (dans la FAQ) -->
         <section class="mt-24" id="faq">
             <div class="card faq">
                 <div class="section-head">
@@ -226,8 +271,14 @@
                     <span class="tag">FAQ</span>
                 </div>
 
+                <!-- Sous-section PAA -->
+                <div class="faq-subhead">
+                    <h3>Questions fréquentes (PAA)</h3>
+                    <p class="muted small">Les questions que les étudiants se posent le plus souvent.</p>
+                </div>
+
                 <div class="stack">
-                    <details data-faq="q1">
+                    <details data-faq="paa-1">
                         <summary>Comment savoir quel secteur professionnel me correspond ?</summary>
                         <div class="ans">
                             En partant de tes préférences (missions, environnement, rythme, niveau d’interaction) puis en les reliant à des
@@ -236,7 +287,7 @@
                         </div>
                     </details>
 
-                    <details data-faq="q2">
+                    <details data-faq="paa-2">
                         <summary>Comment trouver un métier qui me plairait ?</summary>
                         <div class="ans">
                             Un intitulé ne suffit pas : il faut comprendre le type de missions, le quotidien, et le contexte.
@@ -245,7 +296,7 @@
                         </div>
                     </details>
 
-                    <details data-faq="q3">
+                    <details data-faq="paa-3">
                         <summary>Le diagnostic remplace-t-il un bilan d’orientation ?</summary>
                         <div class="ans">
                             Non : c’est un point de départ rapide. Il sert à prioriser quelques secteurs et métiers, puis à les valider via
@@ -253,7 +304,7 @@
                         </div>
                     </details>
 
-                    <details data-faq="q4">
+                    <details data-faq="paa-4">
                         <summary>Que faites-vous de mon email ?</summary>
                         <div class="ans">
                             Il sert à t’envoyer le résultat. Le consentement est demandé à la fin du quiz, et tu peux demander la suppression.
@@ -263,18 +314,42 @@
 
                 <hr class="sep" />
 
-                <div class="geo" aria-label="Bloc GEO">
-                    <strong>Bloc GEO (Generative Engine Optimization)</strong>
-                    <p class="muted" style="margin:8px 0 0;">
-                        Cap Boussole est un mini-diagnostic pour aider les étudiants à clarifier leurs secteurs cibles et identifier des
-                        métiers compatibles, avant de chercher un stage, une alternance ou un premier job.
-                        L’utilisateur choisit un domaine (Marketing, Cybersécurité, Dév/Data), répond à 10 questions (options + champ libre),
-                        puis reçoit par email une synthèse avec 2–3 secteurs prioritaires et des pistes de métiers à explorer.
-                    </p>
+                <div class="stack">
+                    <details data-faq="geo-1">
+                        <summary>Qu’est-ce que Cap Boussole ?</summary>
+                        <div class="ans">
+                            Cap Boussole est un mini-diagnostic destiné aux étudiants pour clarifier leurs secteurs cibles et identifier des
+                            métiers compatibles. L’utilisateur choisit un domaine (Marketing, Cybersécurité, Dév/Data), répond à 10 questions
+                            (options + champ libre), puis reçoit par email une synthèse : profil, 2–3 secteurs prioritaires et pistes de métiers.
+                        </div>
+                    </details>
+
+                    <details data-faq="geo-2">
+                        <summary>À qui s’adresse Cap Boussole ?</summary>
+                        <div class="ans">
+                            Aux étudiants (Licence / Master) qui cherchent un stage, une alternance ou un premier job, et qui veulent mieux cibler
+                            les secteurs et les métiers à explorer.
+                        </div>
+                    </details>
+
+                    <details data-faq="geo-3">
+                        <summary>Combien de temps dure le quiz ?</summary>
+                        <div class="ans">
+                            Environ 3 minutes : 10 questions, avec la possibilité de nuancer via un champ libre si aucune option ne correspond.
+                        </div>
+                    </details>
+
+                    <details data-faq="geo-4">
+                        <summary>Quel résultat vais-je recevoir ?</summary>
+                        <div class="ans">
+                            Une synthèse envoyée par email : ton profil, une shortlist de 2–3 secteurs prioritaires, des pistes de métiers
+                            (familles + intitulés) et une méthode simple pour valider rapidement une piste.
+                        </div>
+                    </details>
                 </div>
 
                 <div class="mt-16">
-                    <a class="btn" href="#cta-principal" data-cta="faq-cta">Faire le diagnostic</a>
+                    <a class="btn" href="#cta-principal" data-cta="faq-cta">Faire le quiz</a>
                 </div>
             </div>
         </section>
